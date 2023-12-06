@@ -17,7 +17,7 @@ This is the implementation of _Predicting the Validity of Set Data with Self-sup
 
 - Data Prepare
     - run `datasets/original_data_process/<dataset_name>/data_gen.py` to generate data in the required format which will be saved in `datasets/txts` 
-    - run ``datasets/process.py` to generate dataset for traning and evaluationg, which will bed saved in `datasets/pkls`.
+    - run `datasets/process.py` to generate dataset for traning and evaluationg, which will bed saved in `datasets/pkls`.
 
 - Configure
     - Configure model parameters and data sets in `setmtr/config.yaml`
