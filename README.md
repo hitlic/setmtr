@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is the implementation of _Predicting the Validity of Set Data with Self-supervised Masked Transformer (SetMtr)_. We implement it (`setmtr`) based on a simple training toolkit [torchility](https://github.com/hitlic/torchility) and provide a data preprocessing toolbox (`./datasets`)
+This is the implementation of _Predicting the Validity of Set Data with Self-supervised Masked Transformer (SetMtr)_. We implement it (`./setmtr`) based on a simple training toolkit [torchility](https://github.com/hitlic/torchility) and provide a data preprocessing toolbox (`./datasets`)
 
 ## Dependency
 
