@@ -1,0 +1,452 @@
+# --- datasets（tasks）：
+# task:  chuancai
+# task:  yuecai
+# task:  market_basket_optimisation
+# task:  market_basket
+task:  groceries    ##choice
+# task:  inorganic_compound
+# task:  inorganic_compound_with_atom_num
+# task:  triangle
+# task:  setmnist1
+# task:  setmnist8
+# task:  setmnist1_rand
+# task:  setmnist8_rand
+# task:  modelnet10_chair
+# task:  modelnet10_sofa
+# task:  iAB_RBC_283
+# task:  iAF692
+# task:  iAF1260b  ##choice
+# task:  iHN637
+# task:  iIT341
+# task:  iJO1366
+# task:  groceries_cases ## case study
+# task:  inorganic_compound_cases ## case study
+# task:  chuancai_cases ## case study
+# task:  iJO1366_cases ## case study
+# task:  iAF1260b_cases ## case study
+# task:  modelnet10_sofa_cases ## case study
+
+
+istune: true  # true or false. Whether run for hyper parameter tune
+data_root: &data_root !path [.., datasets, pkls]  # path of datasets
+# data_root: &data_root !path [.., datasets, cases]  # path for case analysis
+
+# public parameters and should not be modified
+params: &params
+  lr: 0.001
+  epochs: 20
+  val_ratio: 0.2              # validation ratio
+  repeat: 1                   # ** How many times each set is randomly masked
+  batch_size: 128
+  mask_p: 0.2                 # ** Proportion of elements of random mask in the set
+  mask_rand_p: 0.5            # ** Among the elements of Mask, a certain proportion of elements are replaced with random elements.
+  mask_keep_p: 0.1            # ** Among the elements of Mask, a certain proportion of elements remain unchanged.
+  max_set_size: 13            # maximum set size
+  encoder_layer: 3
+  decoder_layer: 3
+  num_heads: 8                # Number of attention heads
+  model_dim: 128              # Model dimension
+  dropout: 0.0
+  epsilon: 0.1                # parameter for LabelSmoothingCrossEntropy
+  element_query_method: l_embed   # element query method
+                                  #   l_embed:   Learnable embedding
+                                  #   p_embed:   Unlearnable position encoding
+                                  #   p_embed_t: Unlearnable position encoding，followed by a positionwise fully connected layer
+  element_embedding: True     # Whether to embedding the element
+  feat_dim: 0                 # feature dimension of set element
+  has_element: True
+  has_feat: False
+  # threshold: 0.5
+
+
+# For parameter tune, please modify the parameters in the following sections.
+
+market_basket_optimisation:
+  <<: *params
+  dataset: !path [*data_root, market_basket_optimisation.pkl]
+  max_set_size: 13
+  mask_p: 0.2
+  mask_rand_p: 0.5
+  mask_keep_p: 0.1
+
+market_basket:
+  <<: *params
+  dataset: !path [*data_root, market_basket.pkl]
+  max_set_size: 60
+
+groceries:
+  <<: *params
+  dataset: !path [*data_root, groceries.pkl]
+  max_set_size: 20
+  epochs: 5
+  repeat: 1
+  batch_size: 128
+  mask_p: 0.4
+  mask_rand_p: 0.1
+  mask_keep_p: 0.1
+  encoder_layer: 3
+  decoder_layer: 3
+  # dropout: 0.05
+  threshold: 0.4
+  # max_set_size: 13
+     
+
+inorganic_compound:
+  <<: *params
+  dataset: !path [*data_root, inorganic_compound.pkl]
+  max_set_size: 6
+  epochs: 0
+  # val_ratio: 0.2
+  # repeat: 1
+  batch_size: 128
+  mask_p: 0.21
+  # mask_rand_p: 0.5
+  # mask_keep_p: 0.1
+  # max_set_size: 13
+  encoder_layer: 4
+  decoder_layer: 0
+  # num_heads: 8    
+
+inorganic_compound_with_atom_num:
+  <<: *params
+  dataset: !path [*data_root, inorganic_compound_with_atom_num.pkl]
+  max_set_size: 6
+  feat_dim: 1
+  has_feat: True
+  has_element: True
+  has_feat: True
+  epochs: 5
+  # repeat: 1
+  # batch_size: 128
+  # mask_p: 0.2
+  # mask_rand_p: 0.5
+  # mask_keep_p: 0.1
+  # max_set_size: 13
+  # encoder_layer: 3
+  # decoder_layer: 3
+  # num_heads: 8    
+
+triangle:
+  <<: *params
+  dataset: !path [*data_root, triangle.pkl]
+  max_set_size: 3
+  element_embedding: False
+  feat_dim: 2
+  has_element: False
+  has_feat: True
+  epochs: 10
+  # repeat: 1
+  batch_size: 128
+  mask_p: 0.2
+  mask_rand_p: 0.4
+  mask_keep_p: 0.1
+  encoder_layer: 3
+  decoder_layer: 3
+  # num_heads: 8 
+
+setmnist1:
+  <<: *params
+  dataset: !path [*data_root, setmnist1.pkl]
+  max_set_size: 20
+  element_embedding: False
+  feat_dim: 2
+  has_element: False
+  has_feat: True
+  epochs: 2
+  repeat: 1
+  batch_size: 128
+  mask_p: 0.2
+  mask_rand_p: 0.4
+  mask_keep_p: 0.3
+  encoder_layer: 3
+  decoder_layer: 3
+  num_heads: 8
+  model_dim: 128
+  dropout: 0.0
+  epsilon: 0.1     
+  threshold: 0.6
+           
+
+setmnist1_rand:
+  <<: *params
+  dataset: !path [*data_root, setmnist1_rand.pkl]
+  max_set_size: 20
+  element_embedding: False
+  epochs: 2
+  repeat: 1
+  batch_size: 128
+  mask_p: 0.4
+  mask_rand_p: 0.4
+  mask_keep_p: 0.3
+  encoder_layer: 3
+  decoder_layer: 3
+  num_heads: 8
+  model_dim: 128
+  dropout: 0.0
+  epsilon: 0.1
+  threshold: 0.6
+
+setmnist8:
+  <<: *params
+  dataset: !path [*data_root, setmnist8.pkl]
+  max_set_size: 30
+  element_embedding: False
+  feat_dim: 2
+  has_element: False
+  has_feat: True 
+  epochs: 2 
+  
+
+setmnist8_rand:
+  <<: *params
+  dataset: !path [*data_root, setmnist8_rand.pkl]
+  max_set_size: 30
+  element_embedding: False
+  feat_dim: 2
+  has_element: False
+  has_feat: True
+
+modelnet10_chair:
+  <<: *params
+  dataset: !path [*data_root, modelnet10_chair.pkl]
+  max_set_size: 200
+  element_embedding: False
+  feat_dim: 3
+  has_element: False
+  has_feat: True
+  epochs: 2
+  repeat: 1
+  batch_size: 128
+  mask_p: 0.2
+  mask_rand_p: 0.5
+  mask_keep_p: 0.4
+  encoder_layer: 3
+  decoder_layer: 3
+  # threshold: 0.008
+
+modelnet10_sofa:
+  <<: *params
+  dataset: !path [*data_root, modelnet10_sofa.pkl]
+  max_set_size: 200
+  element_embedding: False
+  feat_dim: 3
+  has_element: False
+  has_feat: True
+  epochs: 10
+  repeat: 1
+  batch_size: 128
+  mask_p: 0.2
+  mask_rand_p: 0.5
+  mask_keep_p: 0.1
+  encoder_layer: 3
+  decoder_layer: 3
+  threshold: 0.4
+
+
+chuancai:
+  <<: *params
+  dataset: !path [*data_root, chuancai.pkl]
+  max_set_size: 12
+  repeat: 1
+  epochs: 10
+  batch_size: 128
+  mask_p: 0.6
+  mask_rand_p: 0.2
+  mask_keep_p: 0.2
+  encoder_layer: 3
+  decoder_layer: 3
+  num_heads: 8
+  model_dim: 128
+  dropout: 0
+  epsilon: 0.1
+  element_query_method: l_embed
+  element_embedding: True
+  feat_dim: 0
+  has_element: True
+  has_feat: False
+  threshold: 0.3
+
+
+yuecai:
+  <<: *params
+  dataset: !path [*data_root, yuecai.pkl]
+  epochs: 10
+  repeat: 2
+  batch_size: 128
+  mask_p: 0.4
+  mask_rand_p: 0.4
+  mask_keep_p: 0.2
+  max_set_size: 10
+  encoder_layer: 4
+  decoder_layer: 4
+  num_heads: 8
+  model_dim: 128
+  epsilon: 0.8
+  element_query_method: l_embed
+  element_embedding: True
+  feat_dim: 0
+  has_element: True
+  has_feat: False
+  threshold: 0.3
+
+iAB_RBC_283:
+  <<: *params
+  dataset: !path [*data_root, iAB_RBC_283.pkl]
+  max_set_size: 9
+  epochs: 40
+  batch_size: 128
+  mask_p: 0.5
+  mask_rand_p: 0.1
+  mask_keep_p: 0.1
+  threshold: 0.3
+
+
+iAF692:
+  <<: *params
+  dataset: !path [*data_root, iAF692.pkl]
+  max_set_size: 12
+  epochs: 2
+  batch_size: 128
+  mask_p: 0.2
+  mask_rand_p: 0.5
+  mask_keep_p: 0.1
+  encoder_layer: 4
+  decoder_layer: 2
+  threshold: 0.01
+
+iAF1260b:
+  <<: *params
+  dataset: !path [*data_root, iAF1260b.pkl]
+  max_set_size: 12
+  epochs: 4
+  batch_size: 128
+  mask_p: 0.2
+  mask_rand_p: 0.5
+  mask_keep_p: 0.1
+  encoder_layer: 4
+  decoder_layer: 2
+  threshold: 0.2
+  # dropout: 0.0005
+
+iHN637:
+  <<: *params
+  dataset: !path [*data_root, iHN637.pkl]
+  max_set_size: 12
+  epochs: 5
+  threshold: 0.2
+
+iIT341:
+  <<: *params
+  dataset: !path [*data_root, iIT341.pkl]
+  max_set_size: 12
+  epochs: 5
+  threshold: 0.2
+
+
+iJO1366:
+  <<: *params
+  dataset: !path [*data_root, iJO1366.pkl]
+  max_set_size: 13
+  mask_p: 0.2
+  mask_rand_p: 0.5
+  mask_keep_p: 0.1
+  epochs: 50
+  threshold: 0.1
+  # dropout: 0.4
+
+# ----------------case analysis-------------
+groceries_cases:
+  <<: *params
+  max_set_size: 20
+  epochs: 3
+  repeat: 1
+  batch_size: 128
+  mask_p: 0.4
+  mask_rand_p: 0.1
+  mask_keep_p: 0.1
+  encoder_layer: 3
+  decoder_layer: 3
+  threshold: 0.9
+     
+inorganic_compound_cases:
+  <<: *params
+  dataset: !path [*data_root, inorganic_compound_0.9case.pkl]
+  max_set_size: 6
+  epochs: 0
+  # val_ratio: 0.2
+  # repeat: 1
+  batch_size: 128
+  mask_p: 0.21
+  # mask_rand_p: 0.5
+  # mask_keep_p: 0.1
+  # max_set_size: 13
+  encoder_layer: 4
+  decoder_layer: 0
+  # num_heads: 8    
+  
+
+iJO1366_cases:
+  <<: *params
+  dataset: !path [*data_root, iJO1366_0.3case.pkl]
+  max_set_size: 13
+  mask_p: 0.2
+  mask_rand_p: 0.5
+  mask_keep_p: 0.1
+  epochs: 5
+  threshold: 0.2
+  # dropout: 0.4
+
+iAF1260b_cases:
+  <<: *params
+  dataset: !path [*data_root, iAF1260b.pkl]
+  max_set_size: 12
+  epochs: 4
+  batch_size: 128
+  mask_p: 0
+  mask_rand_p: 0.5
+  mask_keep_p: 0.1
+  encoder_layer: 4
+  decoder_layer: 2
+  threshold: 0.2
+  # dropout: 0.0005
+
+chuancai_cases:
+  <<: *params
+  dataset: !path [*data_root, chuancai_0.5case.pkl]
+  max_set_size: 12
+  repeat: 1
+  epochs: 10
+  batch_size: 128
+  mask_p: 0.6
+  mask_rand_p: 0.2
+  mask_keep_p: 0.2
+  encoder_layer: 3
+  decoder_layer: 3
+  num_heads: 8
+  model_dim: 128
+  dropout: 0
+  epsilon: 0.1
+  element_query_method: l_embed
+  element_embedding: True
+  feat_dim: 0
+  has_element: True
+  has_feat: False
+  threshold: 0.3
+
+modelnet10_sofa_cases:
+  <<: *params
+  dataset: !path [*data_root, modelnet10_sofa.pkl]
+  max_set_size: 200
+  element_embedding: False
+  feat_dim: 3
+  has_element: False
+  has_feat: True
+  epochs: 10
+  repeat: 1
+  batch_size: 128
+  mask_p: 0.9
+  mask_rand_p: 1
+  mask_keep_p: 0
+  encoder_layer: 3
+  decoder_layer: 3
+  # threshold: 0.005
